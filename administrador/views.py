@@ -10,8 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 
 ###### IMPORTACIÓN SERIALIZERS ######
-from .serializers import UserSerializer
-
+from .serializers import AdminSerializer
 ###### IMPORTACIÓN MODELOS ######
 from .models import CustomUser
 
@@ -20,22 +19,22 @@ from rest_framework import status
 from django.http import Http404
 
 
-####### REGISTRO USUARIOS ADMINISTRADOR #######
+####### REGISTRO ADMINISTRADOR #######
 @api_view(['GET','POST'])
 
-def register_user(request):
+def register_admin(request):
 
     #Listar ADMIN
     if request.method == 'GET':
         # Queryset
         user = CustomUser.objects.all()
-        serializer = UserSerializer(user, many=True)
+        serializer = AdminSerializer(user, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     # Crear ADMIN
     if request.method == 'POST':
         # Queryset
-        serializer = UserSerializer(data=request.data)
+        serializer = AdminSerializer(data=request.data)
 
         # Validación
         if serializer.is_valid():
@@ -45,7 +44,7 @@ def register_user(request):
 
 @api_view(['GET','PUT', 'DELETE'])
 
-def user_detail(request, pk=None):
+def admin_detail(request, pk=None):
     #Validación ADMIN
     try:
         user = CustomUser.objects.get(id=pk)
@@ -54,12 +53,12 @@ def user_detail(request, pk=None):
     
     #Listar ADMIN
     if request.method == 'GET':
-        serializer = UserSerializer(user)
+        serializer = AdminSerializer(user)
         return Response(serializer.data)
     
     #Editar ADMIN
     elif request.method == 'PUT':
-        serializer = UserSerializer(user, data = request.data)
+        serializer = AdminSerializer(user, data = request.data)
 
         # Validación
         if serializer.is_valid():
@@ -80,7 +79,7 @@ def user_detail(request, pk=None):
 
 ####### LOGIN ADMINISTRADOR #######
 @api_view(['POST'])
-def user_login(request):
+def admin_login(request):
     #Obtener Datos
     if request.method == 'POST':
         username = request.data.get('username') 
@@ -106,7 +105,7 @@ def user_login(request):
 
 
 @permission_classes([IsAuthenticated]) # solo si esta autorizado entra aca
-def user_logout(request):
+def admin_logout(request):
     if request.method == 'POST':
         try:
             request.user.auth_token.delete() # Borra el token generado del Inicio de sesión

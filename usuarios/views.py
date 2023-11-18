@@ -12,8 +12,11 @@ from .models import Usuarios
 from rest_framework import status
 from django.http import Http404
 
+
+####### REGISTRO USUARIOS #######
+
 @api_view(['GET','POST'])
-def register_user_api(request):
+def register_user(request):
     #Listar ADMIN
     if request.method == 'GET':
         # Queryset
@@ -40,16 +43,19 @@ def register_user_api(request):
 
 
 @api_view(['GET','PUT', 'DELETE'])
-def user_detail_api(request, pk=None):
+def user_detail(request, pk=None):
+    # Validación Usuario
     try:
         user = Usuarios.objects.get(id=pk)
     except Usuarios.DoesNotExist:
         return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
     
+    #Listar Usuario
     if request.method == 'GET':
         serializer = UsuarioSerializer(user)
         return Response(serializer.data)
     
+    #Actualizar Usuario
     elif request.method == 'PUT':
         serializer = UsuarioSerializer(user, data = request.data)
 
@@ -59,7 +65,7 @@ def user_detail_api(request, pk=None):
             return Response({'message': '¡Se realizado los cambios con exito!'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    #Eliminar ADMIN
+    #Eliminar Usuario
     elif request.method == 'DELETE':
         try:
             user.delete()
