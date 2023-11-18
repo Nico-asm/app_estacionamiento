@@ -1,2 +1,2 @@
-# Aplicacion Gestión de estacionamiento con Códigos de barra
+# Aplicación Gestión de estacionamiento con Códigos de barra
 

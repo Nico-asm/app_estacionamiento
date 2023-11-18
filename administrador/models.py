@@ -6,10 +6,10 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 class CustomUser(AbstractUser):
-    nombre = models.CharField(max_length=30, null=True, blank=False)
-    apellido = models.CharField(max_length=30, null=True, blank=False)
-    rut = models.CharField(max_length=10, null=True, blank=False)
-    email = models.EmailField(unique=True)    
+    nombre = models.CharField(max_length=30, null=False, blank=False)
+    apellido = models.CharField(max_length=30, null=False, blank=False)
+    rut = models.CharField(max_length=10, null=False, blank=False)
+    email = models.EmailField(unique=True, null=False, blank=False)    
 
     def __str__(self):
         return self.username

@@ -50,7 +50,7 @@ def user_detail(request, pk=None):
     try:
         user = CustomUser.objects.get(id=pk)
     except CustomUser.DoesNotExist:
-        return Response({'error': 'Administrador no econtrado'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': 'Administrador no encontrado'}, status=status.HTTP_404_NOT_FOUND)
     
     #Listar ADMIN
     if request.method == 'GET':
