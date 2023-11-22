@@ -2,8 +2,6 @@
 from barcode import EAN13
 from barcode.writer import ImageWriter
 
-##### IMPORTACIÓN MODELO USUARIOS ##### 
-from usuarios.models import Usuarios
 
 
 # Metodo para Generar Códigos de barra de 13 digitos
