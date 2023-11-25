@@ -44,8 +44,10 @@ def generate_code(request, pk=None):
         codigo_generado = generar_codigos(user.usu_rut)
         codigo_barra = CodigosBarra(
             cod_generado = codigo_generado, #Guarda los datos en el modelo CodigosBarra
-            fk_usuario = user
+            fk_usuario = user,
+            cod_imagen=f'codigos_barra/codigosGen_{codigo_generado}.png'
         )
+
         codigo_barra.save()
         return Response({'message': '¡Se ha Generado Código de barra con exito!'}, status=status.HTTP_200_OK)
 
@@ -106,5 +108,24 @@ def all_code(request):
             serializer = CodigoBarraSerializer(user, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except:
-            return Response({'error':'¡oops, hubo un problema, vuelve intentarlo!'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error':'¡oops, hubo un problema, vuelve a intentarlo!'}, status=status.HTTP_404_NOT_FOUND)
     
+
+@api_view(['POST'])
+def scan_code_bar(request):
+    if request.method == 'POST':
+            codigo_recibido = request.data.get('codigo', '')
+            print(codigo_recibido)
+            try:
+                codigo_bd = CodigosBarra.objects.get(cod_generado=codigo_recibido)
+            except CodigosBarra.DoesNotExist:
+            # Si no se encuentra el código, devuelve un error de acceso denegado al script de enviar_codigo
+                return Response({'error': 'Acceso denegado. Código no válido.'}, status=status.HTTP_403_FORBIDDEN)
+            
+            # Devuelve una respuesta de confirmación si todo salio bien
+            return Response({'message': 'Acceso permitido.'}, status=status.HTTP_200_OK)
+
+        # Si la solicitud no es de tipo POST, devuelve un error
+    return Response({'error': 'Método no permitido.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+ 
