@@ -111,6 +111,7 @@ def all_code(request):
             return Response({'error':'¡oops, hubo un problema, vuelve a intentarlo!'}, status=status.HTTP_404_NOT_FOUND)
     
 
+# ENVIA LOS CÓDIGOS A BD
 @api_view(['POST'])
 def scan_code_bar(request):
     if request.method == 'POST':

@@ -1,11 +1,46 @@
 from rest_framework import serializers
 from .models import CustomUser
+from .validaciones import validar_rut, validar_password
 
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'password', 'nombre', 'apellido', 'rut']
         extra_kwargs = {'password': {'write_only': True}}
+
+    # Validación RUT reales
+    def validate_rut(self, value):
+        if not validar_rut(value):
+            raise serializers.ValidationError("El RUT no es valido.")
+        return value
+    
+    # Validación si el rut ya existe en BD
+    def validate(self, data):
+        # Verificar si el RUT ya está registrado en la base de datos
+        rut_to_check = data['rut']
+        user_id_to_exclude = self.instance.id if self.instance else None
+
+        rut_existente = CustomUser.objects.filter(
+            rut=rut_to_check
+        ).exclude(
+            id=user_id_to_exclude
+        ).exists()
+
+        if rut_existente:
+            raise serializers.ValidationError({"error": ["Este RUT ya está registrado."]})
+
+        return data
+    
+    # Validación de la contraseña para requerir complejidad
+    def validate_password(self, value):
+        es_segura, errores = validar_password(value)
+
+        # Si es falso 
+        if not es_segura:
+            raise serializers.ValidationError({"message": errores})
+
+        return value
+
 
     def create(self, validated_data):
         # Valida los datos, duplicidad y que se ingrese lo que se pide

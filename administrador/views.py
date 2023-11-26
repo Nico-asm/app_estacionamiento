@@ -21,7 +21,8 @@ from django.http import Http404
 
 ####### REGISTRO ADMINISTRADOR #######
 @api_view(['GET','POST'])
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def register_admin(request):
 
     #Listar ADMIN
