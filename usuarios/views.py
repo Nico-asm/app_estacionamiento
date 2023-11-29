@@ -1,6 +1,7 @@
 ###### REST FRAMEWORK ######
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 ###### IMPORTACIÓN SERIALIZERS ######
 from .serializers import UsuarioSerializer
@@ -10,12 +11,13 @@ from .models import Usuarios
 
 ###### IMPORTACIÓN CÓDIGOS DE ESTADOS ######
 from rest_framework import status
-from django.http import Http404
+
 
 
 ####### REGISTRO USUARIOS #######
 
 @api_view(['GET','POST'])
+@permission_classes([IsAuthenticated])
 def register_user(request):
     #Listar ADMIN
     if request.method == 'GET':
@@ -43,6 +45,7 @@ def register_user(request):
 
 
 @api_view(['GET','PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def user_detail(request, pk=None):
     # Validación Usuario
     try:

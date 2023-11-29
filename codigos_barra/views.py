@@ -1,5 +1,5 @@
 ###### REST FRAMEWORK ######
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 ###### IMPORTACIÓN SERIALIZERS ######
@@ -9,16 +9,14 @@ from .serializers import CodigoBarraSerializer
 from usuarios.models import Usuarios
 from .models import CodigosBarra
 
-##### IMPORTACIÓN VIEWS #####
-from usuarios.views import user_detail
-
 ##### METODO PARA GENERAR CODIGOS #####
 from .generador_codigos import generar_codigos
 
 ###### IMPORTACIÓN CÓDIGOS DE ESTADOS ######
 from rest_framework import status
 
-
+#### Auth #####
+from rest_framework.permissions import IsAuthenticated
 
 #### METODO PARA VALIDAD POR PK  ####
 def validation_user(pk):
@@ -30,6 +28,7 @@ def validation_user(pk):
 
 #### GENERAR CODIGOS DE BARRA ####
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def generate_code(request, pk=None):
     # VALIDACIÓN DE USUARIO
     user = validation_user(pk)
@@ -55,6 +54,7 @@ def generate_code(request, pk=None):
 
 #### DETALLE DE CODIGO POR USUARIO ####
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def detail_code(request, pk=None):
     #VALIDACIÓN USUARIOS 
     user = validation_user(pk)
@@ -100,6 +100,7 @@ def detail_code(request, pk=None):
 
 # LISTA TODOS LOS CODIGOS
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def all_code(request):
     if request.method == 'GET':
         try: 

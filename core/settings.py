@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path, os
 
+#Para el tiempo del TO
+from datetime import timedelta
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -44,6 +48,9 @@ INSTALLED_APPS = [
     'estacionamiento',
     'codigos_barra',
     'administrador',
+
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist', # Instalacion de la lista negra para los token
 ]
 
 MIDDLEWARE = [
@@ -135,14 +142,31 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'administrador.CustomUser'
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ],
 
-}
 
 # Para guarda la imagen generada
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+
+
+# Configuracion para el TOKEN
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+
+}
+
+# Configuración de Simple JWT
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),  # Duración del token de acceso
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),  # Período de renovación del token
+    'SLIDING_TOKEN_LIFETIME': timedelta(days=2),  # Duración total del token renovado
+    'ROTATE_REFRESH_TOKENS': True, # Genera un nuevo token y refresh token
+    "BLACKLIST_AFTER_ROTATION": True, 
+    'BLACKLIST_TOKENS': True, #Activo la lista negra
+}

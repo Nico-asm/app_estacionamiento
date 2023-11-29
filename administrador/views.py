@@ -1,13 +1,17 @@
 ###### REST FRAMEWORK ######
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 ###### VALIDACIONES ######
-from rest_framework.authtoken.models import Token
+
 from django.contrib.auth import authenticate
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import TokenAuthentication
+
+###### TOKEN JWT ######
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
+
 
 ###### IMPORTACIÓN SERIALIZERS ######
 from .serializers import AdminSerializer
@@ -16,12 +20,10 @@ from .models import CustomUser
 
 ###### IMPORTACIÓN CÓDIGOS DE ESTADOS ######
 from rest_framework import status
-from django.http import Http404
 
 
 ####### REGISTRO ADMINISTRADOR #######
 @api_view(['GET','POST'])
-@authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def register_admin(request):
 
@@ -44,7 +46,7 @@ def register_admin(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET','PUT', 'DELETE'])
-
+@permission_classes([IsAuthenticated])
 def admin_detail(request, pk=None):
     #Validación ADMIN
     try:
@@ -81,35 +83,48 @@ def admin_detail(request, pk=None):
 ####### LOGIN ADMINISTRADOR #######
 @api_view(['POST'])
 def admin_login(request):
-    #Obtener Datos
+    # Obtener Datos
     if request.method == 'POST':
         username = request.data.get('username') 
         password = request.data.get('password')
 
         # Validación
         user = None
-        if '@' in username: # Comprueba si el usuarios uso Email o nombre de usuario para ingresar
+        if '@' in username:
             try:
-                user = CustomUser.objects.get(email=username) # Si entra con Email, lo busca en BD y lo comprueba
+                user = CustomUser.objects.get(email=username)
             except ObjectDoesNotExist:
                 pass
 
         if not user:
-            user = authenticate(username=username, password=password) # Si no entra con Email, buscar por Usuario
+            user = authenticate(username=username, password=password)
 
         if user:
-            token, _ = Token.objects.get_or_create(user=user) # Cuando ingresa genera un Token 
-            return Response({'token': token.key}, status=status.HTTP_200_OK)
+            if user.is_active:
+            # Generar tokens JWT
+                refresh = RefreshToken.for_user(user)
+                data = {
+                    'message': 'Inicio de sesión exitoso',
+                    'username': user.username,
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token),
+                }
+                return Response(data, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'El usuario no está activo.'}, status=status.HTTP_401_UNAUTHORIZED)
 
-        return Response({'error': 'Administrador no valido en el sistema'}, status=status.HTTP_401_UNAUTHORIZED) 
-    
+        return Response({'error': 'Credenciales inválidas.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-@permission_classes([IsAuthenticated]) # solo si esta autorizado entra aca
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def admin_logout(request):
     if request.method == 'POST':
         try:
-            request.user.auth_token.delete() # Borra el token generado del Inicio de sesión
-            return Response({'message': '¡Se cerro sesión correctamente en el sistema!'}, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # Invalidar el token de acceso (blacklist)
+            refresh_token = request.data.get('refresh_token')
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({'message': 'Sesión cerrada exitosamente.'}, status=status.HTTP_200_OK)
+        except TokenError as e:
+            return Response({'error': f'Token inválido o expirado: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
