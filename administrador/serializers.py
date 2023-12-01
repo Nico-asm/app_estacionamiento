@@ -5,7 +5,7 @@ from .validaciones import validar_rut, validar_password
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'password', 'nombre', 'apellido', 'rut']
+        fields = ['username', 'email', 'password','nombre', 'apellido', 'rut', 'is_active']
         extra_kwargs = {'password': {'write_only': True}}
 
     # Validación RUT reales
@@ -16,18 +16,20 @@ class AdminSerializer(serializers.ModelSerializer):
     
     # Validación si el rut ya existe en BD
     def validate(self, data):
-        # Verificar si el RUT ya está registrado en la base de datos
-        rut_to_check = data['rut']
-        user_id_to_exclude = self.instance.id if self.instance else None
+        # Verificar si la clave 'rut' está presente en data
+        rut_to_check = data.get('rut')
+        
+        if rut_to_check is not None:
+            user_id_to_exclude = self.instance.id if self.instance else None
 
-        rut_existente = CustomUser.objects.filter(
-            rut=rut_to_check
-        ).exclude(
-            id=user_id_to_exclude
-        ).exists()
+            rut_existente = CustomUser.objects.filter(
+                rut=rut_to_check
+            ).exclude(
+                id=user_id_to_exclude
+            ).exists()
 
-        if rut_existente:
-            raise serializers.ValidationError({"error": ["Este RUT ya está registrado."]})
+            if rut_existente:
+                raise serializers.ValidationError({"error": ["Este RUT ya está registrado."]})
 
         return data
     
@@ -58,11 +60,18 @@ class AdminSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
         try:
+            # Validar que los campos 'nombre', 'apellido' y 'rut' no se estén cambiando
+            if 'nombre' in validated_data or 'apellido' in validated_data or 'rut' in validated_data:
+                raise serializers.ValidationError({
+                    "message": "No se permite cambiar los campos 'nombre', 'apellido' o 'rut'."
+                })
+
             # Actualiza un usuario existente con la información validada
             instance.username = validated_data.get('username', instance.username)
             instance.email = validated_data.get('email', instance.email)
+            instance.is_active = validated_data.get('is_active', instance.is_active)  
 
-            # Si hay una nueva contraseña, crea una nueva ecriptación
+            # Si hay una nueva contraseña, crea una nueva encriptación
             new_password = validated_data.get('password', None)
             if new_password:
                 instance.set_password(new_password)
@@ -72,3 +81,4 @@ class AdminSerializer(serializers.ModelSerializer):
         except serializers.ValidationError as e:
             print(f'Error de validación: {e}')
             raise
+

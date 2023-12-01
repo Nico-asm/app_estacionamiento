@@ -45,8 +45,8 @@ def register_admin(request):
             return Response({'message': '¡Administrador creado correctamente!'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET','PUT', 'DELETE'])
-@permission_classes([IsAuthenticated])
+@api_view(['GET','PATCH', 'DELETE'])
+
 def admin_detail(request, pk=None):
     #Validación ADMIN
     try:
@@ -60,13 +60,14 @@ def admin_detail(request, pk=None):
         return Response(serializer.data)
     
     #Editar ADMIN
-    elif request.method == 'PUT':
-        serializer = AdminSerializer(user, data = request.data)
+    elif request.method == 'PATCH':
+        serializer = AdminSerializer(user, data = request.data, partial = True) #Sin partial = true no deja usar patch
 
         # Validación
         if serializer.is_valid():
             serializer.save()
             return Response({'message': '¡Se realizado los cambios con exito!'}, status=status.HTTP_200_OK)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     #Eliminar ADMIN
@@ -113,7 +114,8 @@ def admin_login(request):
             else:
                 return Response({'error': 'El usuario no está activo.'}, status=status.HTTP_401_UNAUTHORIZED)
 
-        return Response({'error': 'Credenciales inválidas.'}, status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            return Response({'error': 'Credenciales inválidas.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 @api_view(['POST'])
