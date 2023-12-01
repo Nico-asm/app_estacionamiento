@@ -4,10 +4,13 @@ from rest_framework.response import Response
 
 ###### IMPORTACIÓN SERIALIZERS ######
 from .serializers import CodigoBarraSerializer
+from usuarios.serializers import UsuarioSerializer
+from estacionamientos.serializers import CupoEstacionamientoSerializer
 
 ###### IMPORTACIÓN DE MODELOS ######
 from usuarios.models import Usuarios
 from .models import CodigosBarra
+from estacionamientos.models import Estacionamiento
 
 ##### METODO PARA GENERAR CODIGOS #####
 from .generador_codigos import generar_codigos
@@ -116,18 +119,43 @@ def all_code(request):
 @api_view(['POST'])
 def scan_code_bar(request):
     if request.method == 'POST':
-            codigo_recibido = request.data.get('codigo', '')
-            print(codigo_recibido)
-            try:
-                codigo_bd = CodigosBarra.objects.get(cod_generado=codigo_recibido)
-            except CodigosBarra.DoesNotExist:
-            # Si no se encuentra el código, devuelve un error de acceso denegado al script de enviar_codigo
-                return Response({'error': 'Acceso denegado. Código no válido.'}, status=status.HTTP_403_FORBIDDEN)
-            
-            # Devuelve una respuesta de confirmación si todo salio bien
+        codigo_recibido = request.data.get('codigo', '')
+        print(codigo_recibido)
+
+        try:
+            codigo_bd = CodigosBarra.objects.get(cod_generado=codigo_recibido)
+            usuario_relacionado = codigo_bd.fk_usuario  # Utiliza el nombre correcto del campo ForeignKey
+        except CodigosBarra.DoesNotExist:
+            return Response({'error': 'Acceso denegado. Código no válido.'}, status=status.HTTP_403_FORBIDDEN)
+
+# ...
+
+        # Verifica si hay espacio disponible en el estacionamiento
+        estacionamiento = Estacionamiento.objects.first()
+
+        if estacionamiento:
+            configuracion = estacionamiento.configuracion
+            cupos_serializer = CupoEstacionamientoSerializer(configuracion)
+
+            cupo_funcionarios = cupos_serializer.data['cupo_funcionarios']
+            cupo_estudiantes = cupos_serializer.data['cupo_estudiantes']
+            cupo_visitas = cupos_serializer.data['cupo_visitas']
+
+            # Ajusta la línea siguiente para utilizar el atributo correcto
+            if usuario_relacionado.usu_tipo == 0 and cupo_funcionarios > 0:
+                cupo_funcionarios -= 1
+            elif usuario_relacionado.usu_tipo == 1 and cupo_estudiantes > 0:
+                cupo_estudiantes -= 1
+            # Ajusta las demás condiciones según tus opciones de roles en el modelo Usuarios
+
+            # Actualiza los valores de cupos en la base de datos
+            configuracion.cupo_funcionarios = cupo_funcionarios
+            configuracion.cupo_estudiantes = cupo_estudiantes
+            configuracion.cupo_visitas = cupo_visitas
+            configuracion.save()
+
             return Response({'message': 'Acceso permitido.'}, status=status.HTTP_200_OK)
 
-        # Si la solicitud no es de tipo POST, devuelve un error
-    return Response({'error': 'Método no permitido.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        return Response({'error': 'No hay objetos de Estacionamiento en la base de datos.'}, status=status.HTTP_404_NOT_FOUND)
 
- 
+    return Response({'error': 'Método no permitido.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
