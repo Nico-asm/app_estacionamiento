@@ -115,35 +115,52 @@ def all_code(request):
             return Response({'error':'¡oops, hubo un problema, vuelve a intentarlo!'}, status=status.HTTP_404_NOT_FOUND)
     
 
-### esto esta malo, porque no calcula bien los datos, sale por ejemplo  Acceso permitido. Espacios ocupados: 89, Espacios libres: 0
-
 @api_view(['POST'])
 def scan_code_bar(request):
+    # Validacion 
     if request.method == 'POST':
+        #Recibo el codigo
         codigo_recibido = request.data.get('codigo', '')
-        
+
+        #Comparo en BD si es valido el codigo obtenido
         try:
             codigo_bd = CodigosBarra.objects.get(cod_generado=codigo_recibido)
             usuario_relacionado = codigo_bd.fk_usuario
         except CodigosBarra.DoesNotExist:
             return Response({'error': 'Acceso denegado. Código no válido.'}, status=status.HTTP_403_FORBIDDEN)
 
+        # Obtengo ebjeto de las tablas Estacionamiento que se relaciona con CuposEstacionamiento
         estacionamiento = Estacionamiento.objects.first()
 
+        #Valida si existe el objeto
         if estacionamiento:
+            #Obtengo la configuracion de estacionamiento 
             configuracion = estacionamiento.configuracion
-
+            # Obtengo dentro de las relaciones de los modelo el tipo de usuario , 0     funcionario , 1 estudiante, 2 visitas
             tipo_usuario = usuario_relacionado.usu_tipo
+            dentro_estacionamiento = usuario_relacionado.dentro_estacionamiento
 
-            # Actualizar los cupos
-            configuracion.actualizar_cupos(tipo_usuario)
+            print(f'Tipo de usuario: {tipo_usuario}, Dentro del estacionamiento: {dentro_estacionamiento}')
+
+            #Validacion para cambiar el estado del usuario 
+            if dentro_estacionamiento:
+                # Si el usuario ya está dentro, está saliendo ahora
+                usuario_relacionado.dentro_estacionamiento = False
+                configuracion.actualizar_cupos(tipo_usuario, incrementar=True)
+            else:
+                # Si el usuario no está dentro, está ingresando ahora
+                usuario_relacionado.dentro_estacionamiento = True
+                configuracion.actualizar_cupos(tipo_usuario, incrementar=False)
 
             # Guardar los cambios en la base de datos
+            usuario_relacionado.save()
             configuracion.save()
+
+            print('Cambios guardados correctamente.')
 
             # Retornar la respuesta con la información actualizada
             return Response({
-                'mensaje': 'Acceso permitido.',
+                'mensaje': 'Operación exitosa.',
                 'cupo_funcionarios': configuracion.cupo_funcionarios,
                 'cupo_estudiantes': configuracion.cupo_estudiantes,
                 'cupo_visitas': configuracion.cupo_visitas
