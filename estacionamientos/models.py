@@ -33,7 +33,7 @@ class CuposEstacionamiento(models.Model):
         return f'CuposEstacionamiento - Funcionarios: {self.cupo_funcionarios}, Estudiantes: {self.cupo_estudiantes}, Visitas: {self.cupo_visitas}'
 
 
-# En el futuro esta tabla ayuada para la escalabilidad del sistema, aca podria colocar, como en algun futuro tarifas, o horarios. 
+# En el futuro esta tabla ayuada para la escalabilidad del sistema, aca podria colocar, como en algun futuro tarifas u horarios. 
 class Estacionamiento(models.Model):
     configuracion = models.OneToOneField(CuposEstacionamiento, on_delete=models.CASCADE)
 

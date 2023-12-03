@@ -1,11 +1,10 @@
 from django.db import models
 
-
-
 class Usuarios(models.Model):
     opcion_rol = (
         (0, 'Funcionario'),
         (1, 'Estudiante'),
+        (2, 'Visita'),
         )
     usu_nombre = models.CharField(max_length=25, blank=False, null=False)
     usu_apellido = models.CharField(max_length=25, blank=False, null=False)
@@ -17,3 +16,5 @@ class Usuarios(models.Model):
     
     def __str__(self):
         return f"{self.usu_nombre} {self.usu_apellido}"
+    
+    

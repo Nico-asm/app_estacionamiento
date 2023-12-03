@@ -44,10 +44,12 @@ INSTALLED_APPS = [
     
     'rest_framework.authtoken',
     'rest_framework',
+    
     'usuarios',
     'estacionamientos',
     'codigos_barra',
     'administrador',
+    'reportes',
 
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist', # Instalacion de la lista negra para los token

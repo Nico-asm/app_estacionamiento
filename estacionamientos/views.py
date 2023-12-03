@@ -2,13 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .models import CuposEstacionamiento, Estacionamiento
-from .serializers import CupoEstacionamientoSerializer
-
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from .models import Estacionamiento
-from .serializers import EstacionamientoSerializer
+from .serializers import CupoEstacionamientoSerializer, EstacionamientoSerializer
 
 
 ## Esta vista en el futuro ayudaria a cambiar configuraciones del estacionamiento, como nuevos cupos, tarifas, horarios especiales etc.
