@@ -53,6 +53,8 @@ INSTALLED_APPS = [
 
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist', # Instalacion de la lista negra para los token
+
+    'drf_yasg', # Swagger
 ]
 
 MIDDLEWARE = [
