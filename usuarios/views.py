@@ -3,6 +3,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
+###### IMPORTACIÓN VALIDACIONES #######
+from administrador.validaciones import validar_rut
+
 ###### IMPORTACIÓN SERIALIZERS ######
 from .serializers import UsuarioSerializer
 
@@ -34,6 +37,9 @@ def register_user(request):
         if serializer.is_valid():
             #Validacion por RUT
             rut = serializer.validated_data.get('usu_rut')
+            if not validar_rut(rut):
+                return Response({'message': '¡El RUT ingresado no es válido!'}, status=status.HTTP_400_BAD_REQUEST)
+            
             existing_user = Usuarios.objects.filter(usu_rut=rut).first()
     
             if existing_user:

@@ -4,8 +4,6 @@ from rest_framework.response import Response
 
 ###### IMPORTACIÓN SERIALIZERS ######
 from .serializers import CodigoBarraSerializer
-from usuarios.serializers import UsuarioSerializer
-from estacionamientos.serializers import CupoEstacionamientoSerializer
 
 ###### IMPORTACIÓN DE MODELOS ######
 from usuarios.models import Usuarios
