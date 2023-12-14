@@ -24,7 +24,7 @@ from rest_framework import status
 
 ####### REGISTRO ADMINISTRADOR #######
 @api_view(['GET','POST'])
-@permission_classes([IsAuthenticated])
+##@permission_classes([IsAuthenticated])##
 def register_admin(request):
 
     #Listar ADMIN
@@ -46,7 +46,7 @@ def register_admin(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET','PATCH', 'DELETE'])
-@permission_classes([IsAuthenticated])
+##@permission_classes([IsAuthenticated])
 def admin_detail(request, pk=None):
     #Validación ADMIN
     try:

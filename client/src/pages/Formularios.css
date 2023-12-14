@@ -1,0 +1,49 @@
+/* Formulario de Reporte */
+.report-form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+  
+  .report-form input,
+  .report-form textarea {
+    margin-bottom: 10px;
+    padding: 8px;
+  }
+  
+  .report-form button {
+    padding: 10px;
+    background-color: rgb(208, 0, 0);
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .report-form button:hover {
+    opacity: 0.8;
+  }
+  
+  /* Formulario de Usuario */
+  .user-form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+  
+  .user-form input {
+    margin-bottom: 10px;
+    padding: 8px;
+  }
+  
+  .user-form button {
+    padding: 10px;
+    background-color: rgb(208, 0, 0);
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .user-form button:hover {
+    opacity: 0.8;
+  }
+  

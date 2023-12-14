@@ -20,7 +20,7 @@ from rest_framework import status
 ####### REGISTRO USUARIOS #######
 
 @api_view(['GET','POST'])
-@permission_classes([IsAuthenticated])
+##@permission_classes([IsAuthenticated])##
 def register_user(request):
     #Listar ADMIN
     if request.method == 'GET':
@@ -51,7 +51,7 @@ def register_user(request):
 
 
 @api_view(['GET','PUT', 'DELETE'])
-@permission_classes([IsAuthenticated])
+##@permission_classes([IsAuthenticated])
 def user_detail(request, pk=None):
     # Validación Usuario
     try:

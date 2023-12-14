@@ -29,7 +29,7 @@ def validation_user(pk):
 
 #### GENERAR CODIGOS DE BARRA ####
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def generate_code(request, pk=None):
     # VALIDACIÓN DE USUARIO
     user = validation_user(pk)
@@ -50,12 +50,13 @@ def generate_code(request, pk=None):
 
         codigo_barra.save()
         return Response({'message': '¡Se ha Generado Código de barra con exito!'}, status=status.HTTP_200_OK)
+        
 
     
 
 #### DETALLE DE CODIGO POR USUARIO ####
 @api_view(['GET', 'PUT', 'DELETE'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def detail_code(request, pk=None):
     #VALIDACIÓN USUARIOS 
     user = validation_user(pk)
@@ -101,7 +102,7 @@ def detail_code(request, pk=None):
 
 # LISTA TODOS LOS CODIGOS
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def all_code(request):
     if request.method == 'GET':
         try: 

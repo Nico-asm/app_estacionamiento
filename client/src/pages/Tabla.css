@@ -1,0 +1,147 @@
+body {
+    font-family: Arial, sans-serif;
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: flex-end;
+    background-color: rgb(255, 255, 255);
+    padding: 1rem 0;
+  }
+  
+  .navbar a {
+    background-color: rgb(208, 0, 0);
+    padding: 0.5rem 1rem;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    margin: 0 5px;
+    text-decoration: none;
+  }
+  
+  .navbar img {
+    width: 100px;
+    height: auto;
+    display: block;
+    position: absolute;
+    top: 1;
+    left: 0;
+    margin-left: 10px;
+  }
+  
+  .navbar a:hover {
+    background-color: rgb(176, 0, 0);
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th,
+  td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+  }
+  
+  h1 {
+    text-align: center;
+  }
+  
+  /* Estilos generales del modal */
+.modal {
+    display: none; /* Oculta el modal por defecto */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
+  }
+  
+  .modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    position: relative;
+  }
+  
+  /* Estilos del botón de cierre */
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  /* Estilos para el botón de enviar y cerrar */
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  input[type="submit"],
+  button {
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: rgb(208, 0, 0);
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  input[type="submit"]:hover,
+  button:hover {
+    background-color: rgb(208, 0, 0);
+  }
+  
+  /* Estilos para los campos de formulario */
+  label,
+  input,
+  select {
+    margin-bottom: 10px;
+  }
+  
+  /* Estilos para el overlay (fondo oscuro alrededor del modal) */
+  .overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+  }
+  
+  /* Estilos específicos para los modales */
+  .modal1,
+  .modal2 {
+    z-index: 2; /* Asegura que el modal esté por encima del overlay */
+  }
+  
+  /* Estilos para centrar el modal en la pantalla */
+  .center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
