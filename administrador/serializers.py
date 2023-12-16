@@ -5,7 +5,7 @@ from .validaciones import validar_rut, validar_password
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'password','nombre', 'apellido', 'rut', 'is_active']
+        fields = ['id','username', 'email', 'password','nombre', 'apellido', 'rut', 'is_active']
         extra_kwargs = {'password': {'write_only': True}}
 
     # Validación RUT reales

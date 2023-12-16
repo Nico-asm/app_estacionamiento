@@ -6,8 +6,7 @@
 py -m venv venv
  ```
 #### Activar  virtualenv en la ruta
-    /venv/Scripts/activate
-
+.\/venv/Scripts/activate
 ### 2- Bajar el Proyecto del repositorio y dejarlo a la altura del venv
 
 ### 3- Instalar el requierements para que instale todas las Librerias

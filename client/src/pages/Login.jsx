@@ -19,7 +19,9 @@ export function Login() {
       });
 
       if (response && response.data) {
-        console.log(response.data);
+        localStorage.setItem('accessToken', response.data.access);
+
+        
 
         // Mostrar toast de inicio de sesión exitoso
         toast.success('Inicio de sesión exitoso');

@@ -24,7 +24,7 @@ from rest_framework import status
 
 ####### REGISTRO ADMINISTRADOR #######
 @api_view(['GET','POST'])
-##@permission_classes([IsAuthenticated])##
+@permission_classes([IsAuthenticated])##
 def register_admin(request):
 
     #Listar ADMIN
@@ -46,7 +46,7 @@ def register_admin(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET','PATCH', 'DELETE'])
-##@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def admin_detail(request, pk=None):
     #Validación ADMIN
     try:
@@ -130,3 +130,10 @@ def admin_logout(request):
             return Response({'message': 'Sesión cerrada exitosamente.'}, status=status.HTTP_200_OK)
         except TokenError as e:
             return Response({'error': f'Token inválido o expirado: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+# Listas administradores
+@api_view(['GET'])
+def admin_list(request):
+    if request.method == 'GET':
+        admins = CustomUser.objects.all()
+        serializer = AdminSerializer(admins, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

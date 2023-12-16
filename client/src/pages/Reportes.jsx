@@ -1,0 +1,63 @@
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+
+export function Reportes() {
+  const [reportes, setReportes] = useState([]);
+  // Recuperar tokens desde el localStorage
+  const accessToken = localStorage.getItem('accessToken');
+
+  const headers = {
+    'Authorization': `Bearer ${accessToken}`,
+  };
+
+  useEffect(() => {
+    // Realiza la llamada a la API para obtener los reportes
+    const fetchReportes = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/reportes/', { headers });
+        console.log('Respuesta de la API de reportes:', response.data);
+
+
+        setReportes(response.data);
+      } catch (error) {
+        console.error('Error al obtener la lista de reportes:', error.response?.data || error.message);
+      }
+    };
+
+    fetchReportes();
+  }, [{ headers }]);
+
+  return (
+    <div>
+        <div className="navbar">
+            <a href="/tabla" className="btn-navbar">Volver a la tabla
+                <img src="https://portales.inacap.cl/web_resources/themes/portal/img/logoFooter.png"alt="Logo A Inacap"/></a>
+        </div>
+      <h1>Lista de Reportes</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Descripción</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+  {reportes.map((reporte) => (
+    <tr key={reporte.id}>
+      <td>{reporte.id}</td>
+      <td>{reporte.rep_titulo}</td>
+      <td>{reporte.rep_descripcion}</td>
+      <td>{new Date(reporte.rep_fecha).toLocaleDateString()}</td>
+    </tr>
+  ))}
+</tbody>
+      </table>
+    </div>
+  );
+}
+
+export default Reportes;

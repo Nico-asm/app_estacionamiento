@@ -1,0 +1,99 @@
+/* Estilos para el modal de administradores */
+.modal-content.admin {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .modal-content.admin h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .modal-content.admin label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  
+  .modal-content.admin input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  .modal-content.admin input[type="submit"] {
+    background-color: #4caf50;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  .modal-content.admin input[type="submit"]:hover {
+    background-color: #45a049;
+  }
+  
+  .modal-content.admin button {
+    background-color: #ccc;
+    color: #333;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  
+  .modal-content.admin button:hover {
+    background-color: #999;
+  }
+  
+  /* Otros estilos para tu aplicación (puedes personalizarlos) */
+  body {
+    font-family: Arial, sans-serif;
+  }
+  
+  .table-container {
+    margin-top: 20px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+  }
+  
+  .btn-navbar {
+    background-color: #3498db;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-right: 10px;
+  }
+  
+  .btn-navbar:hover {
+    background-color: #2980b9;
+  }
+  .logout-btn {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  /* Agrega esto al final de tu archivo CSS actual */

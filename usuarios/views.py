@@ -20,7 +20,7 @@ from rest_framework import status
 ####### REGISTRO USUARIOS #######
 
 @api_view(['GET','POST'])
-##@permission_classes([IsAuthenticated])##
+@permission_classes([IsAuthenticated])##
 def register_user(request):
     #Listar ADMIN
     if request.method == 'GET':
@@ -50,8 +50,8 @@ def register_user(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET','PUT', 'DELETE'])
-##@permission_classes([IsAuthenticated])
+@api_view(['GET','PATCH', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def user_detail(request, pk=None):
     # Validación Usuario
     try:
@@ -65,7 +65,7 @@ def user_detail(request, pk=None):
         return Response(serializer.data)
     
     #Actualizar Usuario
-    elif request.method == 'PUT':
+    elif request.method == 'PATCH':
         serializer = UsuarioSerializer(user, data = request.data)
 
         # Validación
