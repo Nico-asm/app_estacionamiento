@@ -12,7 +12,7 @@ def generar_codigos(usu_rut):
     rut = rut.zfill(12) # para que agrege 0 antes del rut
 
     nombre_archivo = f"codigosGen_{rut}"
-    ruta_completa = os.path.join("media", "codigos_barra", f"{nombre_archivo}.png")
+    ruta_completa = os.path.join("media", "codigos_barra", f"{nombre_archivo}")
 
     barcode = EAN13(rut, writer=ImageWriter()) #Genera la imagen en formato PNG
 

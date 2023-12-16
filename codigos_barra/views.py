@@ -19,6 +19,15 @@ from rest_framework import status
 #### Auth #####
 from rest_framework.permissions import IsAuthenticated
 
+## BAJAR IMAGEN ##
+from wsgiref.util import FileWrapper
+
+
+import os
+from django.conf import settings
+from django.http import HttpResponse
+
+
 #### METODO PARA VALIDAD POR PK  ####
 def validation_user(pk):
     try:
@@ -29,7 +38,7 @@ def validation_user(pk):
 
 #### GENERAR CODIGOS DE BARRA ####
 @api_view(['GET'])
-#@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def generate_code(request, pk=None):
     # VALIDACIÓN DE USUARIO
     user = validation_user(pk)
@@ -56,7 +65,7 @@ def generate_code(request, pk=None):
 
 #### DETALLE DE CODIGO POR USUARIO ####
 @api_view(['GET', 'PUT', 'DELETE'])
-#@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def detail_code(request, pk=None):
     #VALIDACIÓN USUARIOS 
     user = validation_user(pk)
@@ -102,7 +111,7 @@ def detail_code(request, pk=None):
 
 # LISTA TODOS LOS CODIGOS
 @api_view(['GET'])
-#@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def all_code(request):
     if request.method == 'GET':
         try: 
@@ -166,3 +175,57 @@ def scan_code_bar(request):
             }, status=status.HTTP_200_OK)
 
     return Response({'error': 'Método no permitido.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def view_code_bar(request, pk=None):
+    # VALIDACIÓN DE USUARIO
+    user = validation_user(pk)
+    if user is None:
+        return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        try:
+            # Obtener el código de barras asociado a este usuario
+            codigo_barra = CodigosBarra.objects.get(fk_usuario=user)
+            nombre_imagen = codigo_barra.cod_imagen  # Ajusta el nombre del campo según tu modelo
+        except CodigosBarra.DoesNotExist:
+            return Response({'error': 'Código de barras no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Construir la URL completa a la imagen
+        url_imagen = request.build_absolute_uri(f'/media/{nombre_imagen}')
+
+        # Devolver la URL de la imagen en la respuesta
+        return Response({'url_imagen': url_imagen}, status=status.HTTP_200_OK)
+    
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def download_image(request, pk=None):
+    # VALIDACIÓN DE USUARIO
+    user = validation_user(pk)
+    if user is None:
+        return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        # Obtener el código de barras asociado a este usuario
+        codigo_barra = CodigosBarra.objects.get(fk_usuario=user)
+        nombre_imagen = codigo_barra.cod_imagen  # Ajusta el nombre del campo según tu modelo
+    except CodigosBarra.DoesNotExist:
+        return Response({'error': 'Código de barras no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+    # Construir la ruta completa al archivo de imagen
+    ruta_imagen = os.path.join(settings.MEDIA_ROOT, nombre_imagen.path)
+
+    # Verificar si el archivo existe
+    if not os.path.exists(ruta_imagen):
+        return Response({'error': 'Archivo de imagen no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+    # Abrir el archivo y prepararlo para la descarga
+    with open(ruta_imagen, 'rb') as archivo:
+        response = HttpResponse(FileWrapper(archivo), content_type='image/jpeg')
+        response['Content-Disposition'] = f'attachment; filename="{nombre_imagen}"'
+        return response

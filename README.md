@@ -22,7 +22,18 @@ pip install -r requirements.txt
     name = db_estacionamiento
     port = 3306
 
+
 ### 6- Iniciar el servidor de Django
 ``` 
 py manage.py runserver
  ```
+
+### 7- instalar servidor node.js 
+ ## entrar al client , con cd client, luego instalar 
+```
+npm i
+```
+### 8- Iniciar servidor vite, hay que estar posicionado en client
+```
+npm run dev
+```
