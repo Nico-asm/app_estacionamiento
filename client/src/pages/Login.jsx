@@ -1,44 +1,52 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import './Login.css';
+import React, { useState } from "react";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./Login.css";
 
 export function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       // Lógica de inicio de sesión...
-      const response = await axios.post('http://127.0.0.1:8000/api/iniciarsesion/', {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/iniciarsesion/",
+        {
+          username,
+          password,
+        }
+      );
 
       if (response && response.data) {
-        localStorage.setItem('accessToken', response.data.access);
-
-        
+        localStorage.setItem("accessToken", response.data.access);
 
         // Mostrar toast de inicio de sesión exitoso
-        toast.success('Inicio de sesión exitoso');
+        toast.success("Inicio de sesión exitoso");
 
         // Redirigir solo si el inicio de sesión es exitoso
-        window.location.href = '/tabla';
+        window.location.href = "/tabla";
       } else {
-        console.error('La respuesta o los datos son undefined.');
+        console.error("La respuesta o los datos son undefined.");
       }
     } catch (error) {
-      console.error('Error al realizar la solicitud:', error.response?.data || error.message);
+      console.error(
+        "Error al realizar la solicitud:",
+        error.response?.data || error.message
+      );
 
       // Mostrar toasts en caso de error
       if (error.response?.status === 401) {
-        toast.error('Credenciales inválidas. Verifica el usuario y la contraseña.');
+        toast.error(
+          "Credenciales inválidas. Verifica el usuario y la contraseña."
+        );
       } else {
-        toast.error('Error al realizar la solicitud. Inténtalo de nuevo más tarde.');
+        toast.error(
+          "Error al realizar la solicitud. Inténtalo de nuevo más tarde."
+        );
       }
     }
   };
@@ -70,7 +78,7 @@ export function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button type="submit" style={{ backgroundColor: 'rgb(208, 0, 0)' }}>
+          <button type="submit" style={{ backgroundColor: "rgb(208, 0, 0)" }}>
             Iniciar sesión
           </button>
         </form>

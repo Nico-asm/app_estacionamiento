@@ -65,7 +65,7 @@ def generate_code(request, pk=None):
 
 #### DETALLE DE CODIGO POR USUARIO ####
 @api_view(['GET', 'PUT', 'DELETE'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def detail_code(request, pk=None):
     #VALIDACIÓN USUARIOS 
     user = validation_user(pk)
@@ -100,14 +100,13 @@ def detail_code(request, pk=None):
 
     #Elimina el codigo del usuario
     elif request.method == 'DELETE':
-        #VALIDA SI EXISTE UN CODIGO RELACIONADO CON UN USUARIO
+        # Lógica para eliminar el código de barras, incluso si no está asociado
         try:
             codigo_barra = CodigosBarra.objects.get(fk_usuario=user)
             codigo_barra.delete()
             return Response({'message': '¡Código de barra eliminado con éxito!'}, status=status.HTTP_204_NO_CONTENT)
-        
         except CodigosBarra.DoesNotExist:
-                return Response({'error': 'No se encontró el código de barra asociado a este usuario'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'message': 'No se encontró el código de barra asociado a este usuario, pero se procedió con la eliminación'}, status=status.HTTP_204_NO_CONTENT)
 
 # LISTA TODOS LOS CODIGOS
 @api_view(['GET'])
@@ -179,7 +178,7 @@ def scan_code_bar(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def view_code_bar(request, pk=None):
     # VALIDACIÓN DE USUARIO
     user = validation_user(pk)
@@ -190,15 +189,17 @@ def view_code_bar(request, pk=None):
         try:
             # Obtener el código de barras asociado a este usuario
             codigo_barra = CodigosBarra.objects.get(fk_usuario=user)
-            nombre_imagen = codigo_barra.cod_imagen  # Ajusta el nombre del campo según tu modelo
+            nombre_imagen = codigo_barra.cod_imagen.name  # Ajusta el nombre del campo según tu modelo
         except CodigosBarra.DoesNotExist:
             return Response({'error': 'Código de barras no encontrado'}, status=status.HTTP_404_NOT_FOUND)
 
         # Construir la URL completa a la imagen
-        url_imagen = request.build_absolute_uri(f'/media/{nombre_imagen}')
+        url_imagen = request.build_absolute_uri(settings.MEDIA_URL + nombre_imagen)
 
         # Devolver la URL de la imagen en la respuesta
         return Response({'url_imagen': url_imagen}, status=status.HTTP_200_OK)
+
+
     
 
 

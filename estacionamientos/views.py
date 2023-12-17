@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 
 ## Esta vista en el futuro ayudaria a cambiar configuraciones del estacionamiento, como nuevos cupos, tarifas, horarios especiales etc.
 @api_view(['GET', 'POST', 'PUT'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def config_parking(request):
     estacionamiento = Estacionamiento.objects.first()
     serializer = EstacionamientoSerializer

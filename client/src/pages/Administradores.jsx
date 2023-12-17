@@ -4,6 +4,18 @@ import Modal from 'react-modal';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Modal.css';
+// Utilidad para manejar redirecciones por token inválido
+function handleInvalidToken(error) {
+  if (error.response && error.response.status === 401) {
+    console.error(
+      "Token inválido. Redirigiendo a la página de inicio de sesión..."
+    );
+    // Redirige a la página de inicio de sesión 
+    window.location.href = "/inicio-sesion";
+  } else {
+    console.error("Error:", error.response?.data || error.message);
+  }
+}
 Modal.setAppElement('#root');
 
 export function Administradores() {
@@ -25,6 +37,7 @@ export function Administradores() {
         setAdmins(response.data);
         setLoading(false);
       } catch (error) {
+        handleInvalidToken(error, history);
         console.error('Error al obtener la lista de administradores:', error.response?.data || error.message);
         setError('Error al cargar la lista de administradores');
         setLoading(false);
@@ -44,6 +57,7 @@ export function Administradores() {
         console.log(`Administrador con ID ${id} eliminado correctamente.`);
         toast.success('Usuario eliminado con éxito', { position: toast.POSITION.TOP_RIGHT });
       } catch (error) {
+        handleInvalidToken(error, history);
         console.error('Error al eliminar el administrador:', error.response?.data || error.message);
         toast.error('Error al eliminar el usuario', { position: toast.POSITION.TOP_RIGHT });
       }
@@ -82,6 +96,7 @@ export function Administradores() {
       toast.success('Cambios guardados con éxito', { position: toast.POSITION.TOP_RIGHT });
       handleCloseEditModal();
     } catch (error) {
+      handleInvalidToken(error, history);
       console.error('Error al actualizar el administrador:', error.response?.data || error.message);
       toast.error('Error al guardar cambios', { position: toast.POSITION.TOP_RIGHT });
     }

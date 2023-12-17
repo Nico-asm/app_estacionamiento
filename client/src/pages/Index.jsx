@@ -1,8 +1,8 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import './Index.css';
+import React from "react";
+import { Link } from "react-router-dom";
+import "./Index.css";
 
-export function Index(){
+export function Index() {
   return (
     <div>
       <div className="navbar">
@@ -19,11 +19,13 @@ export function Index(){
       <div className="content">
         <h1>Sistema de estacionamiento Inacap</h1>
         <Link to="/inicio-sesion">
-          <button style={{ backgroundColor: 'rgb(208, 0, 0)' }}>Iniciar sesión</button>
+          <button style={{ backgroundColor: "rgb(208, 0, 0)" }}>
+            Iniciar sesión
+          </button>
         </Link>
       </div>
     </div>
   );
-};
+}
 
 export default Index;
