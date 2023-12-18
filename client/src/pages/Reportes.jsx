@@ -19,9 +19,9 @@ export function Reportes() {
   // Recuperar tokens desde el localStorage
   const accessToken = localStorage.getItem("accessToken");
 
-  const headers = {
+  const headers = React.useMemo(() => ({
     Authorization: `Bearer ${accessToken}`,
-  };
+  }), [accessToken]);
 
   useEffect(() => {
     // Realiza la llamada a la API para obtener los reportes
@@ -31,7 +31,7 @@ export function Reportes() {
           "http://127.0.0.1:8000/api/reportes/",
           { headers }
         );
-        console.log("Respuesta de la API de reportes:", response.data);
+        
 
         setReportes(response.data);
       } catch (error) {
@@ -44,7 +44,7 @@ export function Reportes() {
     };
 
     fetchReportes();
-  }, [{ headers }]);
+  }, [headers ]);
 
   return (
     <div>

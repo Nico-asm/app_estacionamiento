@@ -4,7 +4,6 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./Tabla.css";
-import "./Formularios.css";
 import "./Modal.css"; // Agrega esta línea para incluir los estilos del modal
 Modal.setAppElement("#root");
 
@@ -139,9 +138,9 @@ export function Tabla() {
   // Recuperar tokens desde el localStorage
   const accessToken = localStorage.getItem("accessToken");
 
-  const headers = {
+  const headers = React.useMemo(() => ({
     Authorization: `Bearer ${accessToken}`,
-  };
+  }), [accessToken]);
   const openReportModal = () => {
     setReportModalOpen(true);
   };
@@ -230,6 +229,7 @@ export function Tabla() {
   };
   // Obtener la lista de usuarios
   useEffect(() => {
+    console.log("Fetching users from API...");
     const fetchUsers = async () => {
       try {
         const response = await axios.get(
@@ -565,54 +565,33 @@ export function Tabla() {
   // NavBar para poder navegar
   return (
     <div>
-      <div className="navbar">
-        <a
-          href="javascript:void(0)"
-          className="btn-navbar"
-          onClick={openReportModal}
-        >
-          Realizar reporte
-        </a>
-        <a
-          href="javascript:void(0)"
-          className="btn-navbar"
-          onClick={handleVerReportes}
-        >
-          Ver Reportes
-        </a>
-        <a
-          href="javascript:void(0)"
-          className="btn-navbar"
-          onClick={handleVerAdministradores}
-        >
-          Ver Administradores
-        </a>
-        <a
-          href="javascript:void(0)"
-          className="btn-navbar"
-          onClick={handleVerCupos}
-        >
-          Ver Cupos
-        </a>
-        <a
-          href="javascript:void(0)"
-          className="btn-navbar"
-          onClick={openUserModal}
-        >
-          Crear usuario
-        </a>
-        <a
-          href="javascript:void(0)"
-          className="btn-navbar"
-          onClick={openAdminModal}
-        >
-          Crear administrador
-        </a>
-        <img
-          src="https://portales.inacap.cl/web_resources/themes/portal/img/logoFooter.png"
-          alt="Logo A Inacap"
-        />
-      </div>
+      <div>
+  <div className="navbar">
+    <button className="btn-navbar" onClick={openReportModal}>
+      Realizar reporte
+    </button>
+    <button className="btn-navbar" onClick={handleVerReportes}>
+      Ver Reportes
+    </button>
+    <button className="btn-navbar" onClick={handleVerAdministradores}>
+      Ver Administradores
+    </button>
+    <button className="btn-navbar" onClick={handleVerCupos}>
+      Ver Cupos
+    </button>
+    <button className="btn-navbar" onClick={openUserModal}>
+      Crear usuario
+    </button>
+    <button className="btn-navbar" onClick={openAdminModal}>
+      Crear administrador
+    </button>
+    <img
+      src="https://portales.inacap.cl/web_resources/themes/portal/img/logoFooter.png"
+      alt="Logo A Inacap"
+    />
+  </div>
+</div>
+
       <h1>Lista de usuarios autorizados</h1>
       <table>
         <thead>
@@ -641,12 +620,12 @@ export function Tabla() {
               <td>{new Date(user.usu_fecha).toLocaleDateString()}</td>
               <td>{user.dentro_estacionamiento ? "Sí" : "No"}</td>
               <td>
-                <button onClick={() => handleGenerateCode(user.id)}>
+                <button className="button" onClick={() => handleGenerateCode(user.id)}>
                   Generar Código
                 </button>
               </td>
               <td>
-                <button onClick={() => openEditModal(user.id)}>Editar</button>
+                <button className="button" onClick={() => openEditModal(user.id)}>Editar</button>
                 &nbsp;
                 <button onClick={() => openDeleteModal(user.id)}>
                   Eliminar
@@ -655,7 +634,7 @@ export function Tabla() {
               <td>
                 {user.id && (
                   <div className="image-container">
-                  <button onClick={() => handleVerImagen(user.id)}>
+                  <button className="button" onClick={() => handleVerImagen(user.id)}>
                     {userImageStates[user.id]?.showImage ? "Ocultar" : "Ver"} Código de Barras
                   </button>
                   {userImageStates[user.id]?.showImage && (
@@ -670,7 +649,7 @@ export function Tabla() {
                 )}
               </td>
               <td>
-                <button onClick={() => handleDownloadBarcode(user.id)}>
+                <button className="button" onClick={() => handleDownloadBarcode(user.id)}>
                   Descargar Código de Barras
                 </button>
               </td>

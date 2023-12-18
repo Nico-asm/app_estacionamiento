@@ -9,7 +9,7 @@ body {
   padding: 1rem 0;
 }
 
-.navbar a {
+.navbar button {
   background-color: rgb(208, 0, 0);
   padding: 0.5rem 1rem;
   color: rgb(255, 255, 255);
@@ -19,6 +19,20 @@ body {
   margin: 0 5px;
   text-decoration: none;
 }
+.button {
+  background-color: rgb(208, 0, 0);
+  padding: 0.5rem 1rem;
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  margin: 0 5px;
+  text-decoration: none;
+}
+.button:hover {
+  background-color: rgb(176, 0, 0);
+}
+
 
 .navbar img {
   width: 100px;
@@ -30,7 +44,7 @@ body {
   margin-left: 10px;
 }
 
-.navbar a:hover {
+.navbar button:hover {
   background-color: rgb(176, 0, 0);
 }
 
